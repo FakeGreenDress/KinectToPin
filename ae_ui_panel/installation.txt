@@ -1,4 +1,4 @@
-To install, drop the KinectToPin UI.jsx and Kinect Skeleton.ffx files into your After Effects ScriptUI Panels directory.  
+To install, drop the KinectToPin.jsx and Kinect Skeleton.ffx files into your After Effects ScriptUI Panels directory.  
 
 By default, this is:
 
