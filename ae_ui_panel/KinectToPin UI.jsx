@@ -1,5 +1,5 @@
 ﻿//
-// KinectToPin Motion Capture Tools v. 1.2
+// KinectToPin Motion Capture Tools v. 1.2.5
 //
 // by Nick Fox-Gieg and Victoria Nece
 // kinecttopin.fox-gieg.com
@@ -189,7 +189,7 @@ function create3DTemplate() { // KinectToPin Template Setup for UI Panels
 	var mocap = myComp.layers.addSolid([0, 0, 0], "mocap", 640, 480, 1);
 	mocap.guideLayer = true;
     mocap.threeDLayer = true;
-	mocap.property("position").setValue([960,540]);
+	mocap.property("position").setValue([960,540]);  
 	mocap.property("opacity").setValue(0);
     mocap.property("anchorPoint").setValue([0,0]);
     mocap.label = 6;
@@ -236,10 +236,23 @@ function create3DTemplate() { // KinectToPin Template Setup for UI Panels
 	
 	}
 	
+
+    
     //add control camera
     var compcam = myComp.layers.addCamera("KinectToPin Camera", [960,540]);    
     compcam.property("position").setValue([960,540,-1500]);
+
     
+    // Auto-scale Z on mocap layer
+    var autoZ = mocap.property("position");
+    autoZ.expression = 
+        "mocap = thisLayer; \r" +
+        "try{cam = thisComp.activeCamera;}catch(err){ cam = mocap }; \r" +
+        "torso = mocap.effect(\"torso\")(\"3D Point\"); \r" +
+        "tW = mocap.toWorld(torso); \r" +
+        "fW = cam.fromWorld(tW); \r" +
+        "[value[0],value[1],value[2]+(1500-fW[2])*2]"; 
+
     //add skeleton visualizer
     var skeleviz = myComp.layers.addSolid([0, 0, 0], "Skeleton Visualizer", 1920, 1080, 1);
     skeleviz.guideLayer = true;
@@ -369,12 +382,14 @@ if (curLayer.name == "l_hand_layer"){
         "value/(find/2000);\r" +
         "}catch(err){ value }";
         curLayer.property("Transform").property("Scale").expression = scaleexpression;
-        
+ 
+        curLayer.property("Transform").property("Position").setValue([0,0]);
         var posexpression =         "master_source = thisComp.layer(\"l_hand\"); \r" +
         "source_point = master_source.transform.anchorPoint; \r" +
         "point = master_source.toComp(source_point); \r" +
         "point + value";
          curLayer.property("Transform").property("Position").expression = posexpression;
+
          
          var rotexpression = "this_src = thisComp.layer(\"l_hand\"); \r" +
             "that_src = thisComp.layer(\"l_elbow\"); \r" +
@@ -398,7 +413,8 @@ if (curLayer.name == "l_foot_layer"){
         "value/(find/2000);\r" +
         "}catch(err){ value }";
         curLayer.property("Transform").property("Scale").expression = scaleexpression;
-        
+  
+          curLayer.property("Transform").property("Position").setValue([0,0]);
         var posexpression =         "master_source = thisComp.layer(\"l_foot\"); \r" +
         "source_point = master_source.transform.anchorPoint; \r" +
         "point = master_source.toComp(source_point); \r" +
@@ -428,6 +444,7 @@ if (curLayer.name == "r_hand_layer"){
         "}catch(err){ value }";
         curLayer.property("Transform").property("Scale").expression = scaleexpression;
         
+        curLayer.property("Transform").property("Position").setValue([0,0]);
         var posexpression =         "master_source = thisComp.layer(\"r_hand\"); \r" +
         "source_point = master_source.transform.anchorPoint; \r" +
         "point = master_source.toComp(source_point); \r" +
@@ -457,6 +474,7 @@ if (curLayer.name == "r_foot_layer"){
         "}catch(err){ value }";
         curLayer.property("Transform").property("Scale").expression = scaleexpression;
         
+        curLayer.property("Transform").property("Position").setValue([0,0]);
         var posexpression =         "master_source = thisComp.layer(\"r_foot\"); \r" +
         "source_point = master_source.transform.anchorPoint; \r" +
         "point = master_source.toComp(source_point); \r" +
@@ -486,6 +504,7 @@ if (curLayer.name == "head_layer"){
         "}catch(err){ value }";
         curLayer.property("Transform").property("Scale").expression = scaleexpression;
         
+        curLayer.property("Transform").property("Position").setValue([0,0]);
         var posexpression = "master_source = thisComp.layer(\"head\"); \r" +
         "source_point = master_source.transform.anchorPoint; \r" +
         "point = master_source.toComp(source_point); \r" +
